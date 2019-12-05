@@ -15,22 +15,17 @@ func checkErr(err error) {
 	}
 }
 
-func main() {
-	if len(os.Args) != 6 {
-		fmt.Printf("Usage:%s serverIP startPort endPort icmpPacketInterval portTestInterval\n", os.Args[0])
-		os.Exit(0)
-	}
-
-	startPort, err := strconv.Atoi(os.Args[2])
+func udpPortTestTool(serverIP, startport, endport, udpPackInterval, portInterval string) {
+	startPort, err := strconv.Atoi(startport)
 	checkErr(err)
 
-	endPort, err := strconv.Atoi(os.Args[3])
+	endPort, err := strconv.Atoi(endport)
 	checkErr(err)
 
-	sendPacketInteval, err := strconv.Atoi(os.Args[4])
+	sendPacketInteval, err := strconv.Atoi(udpPackInterval)
 	checkErr(err)
 
-	portTestInterval, err := strconv.Atoi(os.Args[5])
+	portTestInterval, err := strconv.Atoi(portInterval)
 	checkErr(err)
 
 	if startPort < 10000 || endPort > 50000 {
@@ -48,7 +43,7 @@ func main() {
 	startTime := time.Now()
 	startStrPort := strconv.Itoa(startPort)
 	for {
-		servAddr := os.Args[1] + ":" + startStrPort
+		servAddr := serverIP + ":" + startStrPort
 		conn, err := net.Dial("udp", servAddr)
 		checkErr(err)
 
@@ -79,4 +74,12 @@ func main() {
 			break
 		}
 	}
+}
+
+func main() {
+	if len(os.Args) != 6 {
+		fmt.Printf("Usage:%s serverIP startPort endPort icmpPacketInterval portTestInterval\n", os.Args[0])
+		os.Exit(0)
+	}
+	udpPortTestTool(os.Args[1], os.Args[2], os.Args[3], os.Args[4], os.Args[5])
 }
