@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func handleConn(conn net.Conn) {
+func echoTime(conn net.Conn) {
 	defer conn.Close()
 	for {
 		_, err := io.WriteString(conn, time.Now().Format("15:04:05\n"))
@@ -41,6 +41,6 @@ func main() {
 			continue
 		}
 
-		handleConn(connect)
+		go echoTime(connect)
 	}
 }
