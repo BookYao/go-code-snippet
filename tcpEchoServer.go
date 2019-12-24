@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -18,6 +19,19 @@ func echoTime(conn net.Conn) {
 			break
 		}
 		time.Sleep(1 * time.Second)
+	}
+}
+
+func echoInput(conn net.Conn) {
+	defer conn.Close()
+	input := bufio.NewScanner(conn)
+	for input.Scan() {
+		log.Println("Recv Data:", input.Text())
+		_, err := io.WriteString(conn, input.Text())
+		if err != nil {
+			loggerPrint("Maybe Client Close.")
+			break
+		}
 	}
 }
 
@@ -41,6 +55,7 @@ func main() {
 			continue
 		}
 
-		go echoTime(connect)
+		//go echoTime(connect)
+		go echoInput(connect)
 	}
 }
